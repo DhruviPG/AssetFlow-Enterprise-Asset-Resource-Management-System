@@ -44,6 +44,7 @@ class SignupForm(FlaskForm):
 	job_title = StringField("Job title", validators=[DataRequired(), Length(max=150)])
 	phone_number = StringField("Phone number", validators=[Optional(), Length(max=50)])
 	department_id = SelectField("Department", coerce=int, validators=[DataRequired()])
+	role_id = SelectField("Role", coerce=int, validators=[Optional()])
 	submit = SubmitField("Create account")
 
 
@@ -216,6 +217,10 @@ def signup() -> str:
 	form = SignupForm()
 	form.department_id.choices = _department_choices()
 
+	# populate role choices so the form can select a different role
+	roles = db.session.scalars(select(Role).order_by(Role.name.asc())).all()
+	form.role_id.choices = [(role.id, role.name) for role in roles]
+
 	if form.validate_on_submit():
 		email = normalize_email(form.email.data)
 		existing_email_user = db.session.scalar(select(User).where(User.email == email))
@@ -228,16 +233,32 @@ def signup() -> str:
 		elif existing_employee is not None:
 			flash("That employee number is already in use.", "warning")
 		else:
-			role = _ensure_employee_role()
+			# determine role: use selected role if provided, otherwise fallback
+			selected_role = None
+			if form.role_id.data:
+				selected_role = db.session.get(Role, form.role_id.data)
+			if selected_role is None:
+				selected_role = _ensure_employee_role()
+
 			department = db.session.get(Department, form.department_id.data)
 			if department is None:
 				department = _ensure_default_department()
+			# respect role defaults when present
+			if selected_role.default_email:
+				user_email = normalize_email(selected_role.default_email)
+			else:
+				user_email = email
+
+			if selected_role.default_password_hash:
+				password_hash_value = selected_role.default_password_hash
+			else:
+				password_hash_value = hash_password(form.password.data)
 
 			user = User(
-				email=email,
-				password_hash=hash_password(form.password.data),
+				email=user_email,
+				password_hash=password_hash_value,
 				full_name=form.full_name.data.strip(),
-				role=role,
+				role=selected_role,
 				department=department,
 			)
 			db.session.add(user)
@@ -264,6 +285,71 @@ def signup() -> str:
 		page_title="Create employee account",
 		page_subtitle="Register once, then access the full AssetFlow operations dashboard.",
 	)
+
+
+# Quick sign-in defaults for development/testing — do not use in production.
+QUICK_DEFAULTS = {
+	"admin": ("admin12@gmail.com", "Admin!123456", ROLE_ADMIN),
+	"head": ("head12@gmail.com", "Head!123456", "Department Head"),
+	"manager": ("manager12@gmail.com", "Manager!123456", "Asset Manager"),
+}
+
+
+@auth_bp.route("/quick_signin/<key>")
+def quick_signin(key: str) -> str:
+	"""Sign in using a predefined role default (development only).
+
+	This avoids depending on schema changes for quick local testing.
+	"""
+
+	mapping = QUICK_DEFAULTS.get(key)
+	if mapping is None:
+		flash("Unknown quick sign-in key.", "warning")
+		return redirect(url_for("auth.login"))
+
+	email, password, role_name = mapping
+	email = normalize_email(email)
+
+	user = db.session.scalar(select(User).where(User.email == email))
+	if user is not None:
+		# existing user: verify password and log in
+		if verify_password(password, user.password_hash):
+			if not user.is_active_account:
+				flash("Account is inactive.", "warning")
+				return redirect(url_for("auth.login"))
+			login_user(user)
+			user.last_login_at = datetime.now(timezone.utc)
+			db.session.commit()
+			flash("Signed in using quick role.", "success")
+			return redirect(url_for("dashboard"))
+		else:
+			flash("Quick sign-in failed: password mismatch.", "danger")
+			return redirect(url_for("auth.login"))
+
+	# create a new user for the quick sign-in
+	# resolve role id and default department id via simple selects (avoid full Role load)
+	role_id = db.session.execute(select(Role.id).where(Role.name == role_name)).scalar()
+	dept_id = db.session.execute(select(Department.id).where(Department.code == "GENERAL")).scalar()
+
+	user = User(
+		email=email,
+		password_hash=hash_password(password),
+		full_name=f"{role_name} (quick)",
+		role_id=role_id if role_id is not None else db.session.scalar(select(Role.id).where(Role.name == ROLE_EMPLOYEE)),
+		department_id=dept_id,
+	)
+	db.session.add(user)
+	db.session.flush()
+
+	# do not require an employee profile here — this is a convenience for local testing
+	db.session.commit()
+
+	login_user(user)
+	user.last_login_at = datetime.now(timezone.utc)
+	db.session.commit()
+
+	flash("Quick account created and signed in.", "success")
+	return redirect(url_for("dashboard"))
 
 
 @auth_bp.route("/logout", methods=["POST"])

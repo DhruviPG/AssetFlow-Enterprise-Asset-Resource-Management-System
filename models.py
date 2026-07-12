@@ -33,6 +33,8 @@ class Role(db.Model, TimestampMixin):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False, index=True)
     description: Mapped[str | None] = mapped_column(String(255))
+    default_email: Mapped[str | None] = mapped_column(String(255))
+    default_password_hash: Mapped[str | None] = mapped_column(String(255))
 
     users: Mapped[list["User"]] = relationship(back_populates="role")
 

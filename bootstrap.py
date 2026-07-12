@@ -32,6 +32,14 @@ DEFAULT_ROLE_NAMES = (
     ROLE_EMPLOYEE,
 )
 
+# Hardcoded defaults for role-level onboarding. Passwords here are
+# example defaults; they are immediately hashed before being persisted.
+ROLE_DEFAULTS = {
+    ROLE_ADMIN: ("admin12@gmail.com", "Admin!123456"),
+    ROLE_DEPARTMENT_HEAD: ("head12@gmail.com", "Head!123456"),
+    ROLE_ASSET_MANAGER: ("manager12@gmail.com", "Manager!123456"),
+}
+
 
 def ensure_database_schema() -> None:
     """Create all tables defined in the current SQLAlchemy metadata."""
@@ -47,6 +55,12 @@ def ensure_reference_roles() -> list[Role]:
         role = db.session.scalar(select(Role).where(Role.name == role_name))
         if role is None:
             role = Role(name=role_name, description=f"{role_name} role for AssetFlow access control.")
+            # apply hardcoded defaults when available
+            defaults = ROLE_DEFAULTS.get(role_name)
+            if defaults is not None:
+                default_email, default_password = defaults
+                role.default_email = normalize_email(default_email)
+                role.default_password_hash = hash_password(default_password)
             db.session.add(role)
         seeded_roles.append(role)
 
