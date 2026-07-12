@@ -105,7 +105,7 @@ def asset_index() -> str:
 
 
 @assets_bp.route("/new", methods=["GET", "POST"])
-@require_roles(ROLE_ADMIN, ROLE_ASSET_MANAGER)
+@require_roles(ROLE_ADMIN, ROLE_ASSET_MANAGER, ROLE_DEPARTMENT_HEAD, ROLE_EMPLOYEE)
 def register_asset() -> str:
     """Create a new asset record and place it into the normalized catalog."""
 
