@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Bookings | AssetFlow{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+  <div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button class="btn theme-toggle mobile-nav-toggle" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div>
+        <h1>Resource bookings</h1>
+        <p>Reservations, active usage, and booking history.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
+    <a class="btn btn-primary" href="{{ url_for('bookings.booking_create') }}">New booking</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-3">
+  <div class="col-12 col-md-4">
+    <div class="panel p-3">
+      <small class="text-secondary-emphasis">Upcoming</small>
+      <h2 class="mb-0">{{ upcoming_bookings }}</h2>
+    </div>
+  </div>
+  <div class="col-12 col-md-4">
+    <div class="panel p-3">
+      <small class="text-secondary-emphasis">Ongoing</small>
+      <h2 class="mb-0">{{ ongoing_bookings }}</h2>
+    </div>
+  </div>
+  <div class="col-12 col-md-4">
+    <div class="panel p-3">
+      <small class="text-secondary-emphasis">Completed</small>
+      <h2 class="mb-0">{{ completed_bookings }}</h2>
+    </div>
+  </div>
+</div>
+
+<section class="panel">
+  <div class="panel-header p-3 pb-0">
+    <div>
+      <h3 class="section-title">Booking timeline</h3>
+      <p class="section-subtitle">All scheduled reservations across the asset pool.</p>
+    </div>
+  </div>
+  <div class="panel-body p-3 table-responsive">
+    <table class="table align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Asset</th>
+          <th>Purpose</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+        <tr>
+          <td>{{ booking.asset.asset_tag }}</td>
+          <td>{{ booking.purpose }}</td>
+          <td>{{ booking.start_at }}</td>
+          <td>{{ booking.end_at }}</td>
+          <td>{{ booking.status }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" class="text-center text-secondary py-5">No bookings are scheduled yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const savedTheme = localStorage.getItem('assetflow-theme') || 'light';
+  const root = document.documentElement;
+  const themeIcon = document.getElementById('themeIcon');
+  const themeToggle = document.getElementById('themeToggle');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    localStorage.setItem('assetflow-theme', theme);
+  }
+
+  applyTheme(savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+  });
+
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      const expanded = sidebar.getAttribute('data-expanded') === 'true';
+      sidebar.setAttribute('data-expanded', String(!expanded));
+    });
+  }
+</script>
+{% endblock %}

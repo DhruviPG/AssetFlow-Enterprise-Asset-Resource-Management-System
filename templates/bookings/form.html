@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}New booking | AssetFlow{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+  <div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button class="btn theme-toggle mobile-nav-toggle" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div>
+        <h1>Create booking</h1>
+        <p>Reserve a specific asset for a defined time window.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
+    <a class="btn btn-outline-primary" href="{{ url_for('bookings.booking_index') }}">Back to bookings</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="panel p-4">
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        {{ form.asset_id.label(class_='form-label') }}
+        {{ form.asset_id(class_='form-select') }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.purpose.label(class_='form-label') }}
+        {{ form.purpose(class_='form-control', placeholder='Project, event, or department use') }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.start_at.label(class_='form-label') }}
+        {{ form.start_at(class_='form-control') }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.end_at.label(class_='form-label') }}
+        {{ form.end_at(class_='form-control') }}
+      </div>
+      <div class="col-12">
+        {{ form.notes.label(class_='form-label') }}
+        {{ form.notes(class_='form-control', rows='4', placeholder='Optional notes') }}
+      </div>
+    </div>
+    <div class="d-grid d-md-flex gap-2 mt-4">
+      {{ form.submit(class_='btn btn-primary') }}
+      <a class="btn btn-outline-secondary" href="{{ url_for('bookings.booking_index') }}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const savedTheme = localStorage.getItem('assetflow-theme') || 'light';
+  const root = document.documentElement;
+  const themeIcon = document.getElementById('themeIcon');
+  const themeToggle = document.getElementById('themeToggle');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    localStorage.setItem('assetflow-theme', theme);
+  }
+
+  applyTheme(savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+  });
+
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      const expanded = sidebar.getAttribute('data-expanded') === 'true';
+      sidebar.setAttribute('data-expanded', String(!expanded));
+    });
+  }
+</script>
+{% endblock %}

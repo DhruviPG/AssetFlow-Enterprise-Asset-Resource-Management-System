@@ -1,0 +1,43 @@
+{% extends 'auth/layout.html' %}
+
+{% block title %}Create account | AssetFlow{% endblock %}
+
+{% block content %}
+<h2>Create employee account</h2>
+<p class="text-muted mb-4">Public signup provisions an employee profile and default role.</p>
+<form method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <div class="mb-3">
+    {{ form.full_name.label(class_='form-label') }}
+    {{ form.full_name(class_='form-control', placeholder='Full name') }}
+  </div>
+  <div class="mb-3">
+    {{ form.email.label(class_='form-label') }}
+    {{ form.email(class_='form-control', placeholder='name@company.com') }}
+  </div>
+  <div class="mb-3">
+    {{ form.password.label(class_='form-label') }}
+    {{ form.password(class_='form-control', placeholder='Minimum 10 characters') }}
+  </div>
+  <div class="mb-3">
+    {{ form.employee_number.label(class_='form-label') }}
+    {{ form.employee_number(class_='form-control', placeholder='EMP-0001') }}
+  </div>
+  <div class="mb-3">
+    {{ form.job_title.label(class_='form-label') }}
+    {{ form.job_title(class_='form-control', placeholder='Job title') }}
+  </div>
+  <div class="mb-3">
+    {{ form.phone_number.label(class_='form-label') }}
+    {{ form.phone_number(class_='form-control', placeholder='Optional phone number') }}
+  </div>
+  <div class="mb-4">
+    {{ form.department_id.label(class_='form-label') }}
+    {{ form.department_id(class_='form-select') }}
+  </div>
+  <div class="d-grid gap-2">
+    {{ form.submit(class_='btn btn-primary') }}
+    <a class="btn btn-outline-light" href="{{ url_for('auth.login') }}">Back to sign in</a>
+  </div>
+</form>
+{% endblock %}

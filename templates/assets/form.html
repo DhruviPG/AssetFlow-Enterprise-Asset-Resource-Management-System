@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Register asset | AssetFlow{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+  <div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button class="btn theme-toggle mobile-nav-toggle" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div>
+        <h1>Register asset</h1>
+        <p>Create a normalized asset record with tracking metadata.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
+    <a class="btn btn-outline-primary" href="{{ url_for('assets.asset_index') }}">Back to assets</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="panel p-4">
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        {{ form.asset_tag.label(class_='form-label') }}
+        {{ form.asset_tag(class_='form-control', placeholder='AF-1001') }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.name.label(class_='form-label') }}
+        {{ form.name(class_='form-control', placeholder='Laptop or projector name') }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.category_id.label(class_='form-label') }}
+        {{ form.category_id(class_='form-select') }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.current_value.label(class_='form-label') }}
+        {{ form.current_value(class_='form-control', min='0') }}
+      </div>
+      <div class="col-12 col-md-4">
+        {{ form.serial_number.label(class_='form-label') }}
+        {{ form.serial_number(class_='form-control') }}
+      </div>
+      <div class="col-12 col-md-4">
+        {{ form.barcode_value.label(class_='form-label') }}
+        {{ form.barcode_value(class_='form-control') }}
+      </div>
+      <div class="col-12 col-md-4">
+        {{ form.qr_code_value.label(class_='form-label') }}
+        {{ form.qr_code_value(class_='form-control') }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.status.label(class_='form-label') }}
+        {{ form.status(class_='form-select') }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.condition.label(class_='form-label') }}
+        {{ form.condition(class_='form-select') }}
+      </div>
+      <div class="col-12">
+        {{ form.description.label(class_='form-label') }}
+        {{ form.description(class_='form-control', rows='4') }}
+      </div>
+    </div>
+    <div class="d-grid d-md-flex gap-2 mt-4">
+      {{ form.submit(class_='btn btn-primary') }}
+      <a class="btn btn-outline-secondary" href="{{ url_for('assets.asset_index') }}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const savedTheme = localStorage.getItem('assetflow-theme') || 'light';
+  const root = document.documentElement;
+  const themeIcon = document.getElementById('themeIcon');
+  const themeToggle = document.getElementById('themeToggle');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    localStorage.setItem('assetflow-theme', theme);
+  }
+
+  applyTheme(savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+  });
+
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      const expanded = sidebar.getAttribute('data-expanded') === 'true';
+      sidebar.setAttribute('data-expanded', String(!expanded));
+    });
+  }
+</script>
+{% endblock %}

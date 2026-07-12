@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Raise request | AssetFlow{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+  <div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button class="btn theme-toggle mobile-nav-toggle" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div>
+        <h1>Raise maintenance request</h1>
+        <p>Log an issue and route it into the service workflow.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
+    <a class="btn btn-outline-primary" href="{{ url_for('maintenance.maintenance_index') }}">Back to queue</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="panel p-4">
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        {{ form.asset_id.label(class_='form-label') }}
+        {{ form.asset_id(class_='form-select') }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.priority.label(class_='form-label') }}
+        {{ form.priority(class_='form-select') }}
+      </div>
+      <div class="col-12">
+        {{ form.issue_summary.label(class_='form-label') }}
+        {{ form.issue_summary(class_='form-control', placeholder='Summarize the issue') }}
+      </div>
+      <div class="col-12">
+        {{ form.issue_details.label(class_='form-label') }}
+        {{ form.issue_details(class_='form-control', rows='5', placeholder='Add symptoms, error codes, or additional details') }}
+      </div>
+    </div>
+    <div class="d-grid d-md-flex gap-2 mt-4">
+      {{ form.submit(class_='btn btn-primary') }}
+      <a class="btn btn-outline-secondary" href="{{ url_for('maintenance.maintenance_index') }}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const savedTheme = localStorage.getItem('assetflow-theme') || 'light';
+  const root = document.documentElement;
+  const themeIcon = document.getElementById('themeIcon');
+  const themeToggle = document.getElementById('themeToggle');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    localStorage.setItem('assetflow-theme', theme);
+  }
+
+  applyTheme(savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+  });
+
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      const expanded = sidebar.getAttribute('data-expanded') === 'true';
+      sidebar.setAttribute('data-expanded', String(!expanded));
+    });
+  }
+</script>
+{% endblock %}
