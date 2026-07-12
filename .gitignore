@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local configuration and generated data
+.env
+.env.*
+assetflow.db
+instance/
+
+# IDE and OS noise
+.vscode/
+.DS_Store
+Thumbs.db

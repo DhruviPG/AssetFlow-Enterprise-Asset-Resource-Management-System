@@ -93,34 +93,3 @@
   </div>
 </section>
 {% endblock %}
-
-{% block scripts %}
-<script>
-  const savedTheme = localStorage.getItem('assetflow-theme') || 'light';
-  const root = document.documentElement;
-  const themeIcon = document.getElementById('themeIcon');
-  const themeToggle = document.getElementById('themeToggle');
-  const sidebar = document.getElementById('sidebar');
-  const sidebarToggle = document.getElementById('sidebarToggle');
-
-  function applyTheme(theme) {
-    root.setAttribute('data-theme', theme);
-    themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-    localStorage.setItem('assetflow-theme', theme);
-  }
-
-  applyTheme(savedTheme);
-
-  themeToggle.addEventListener('click', () => {
-    const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    applyTheme(nextTheme);
-  });
-
-  if (sidebarToggle) {
-    sidebarToggle.addEventListener('click', () => {
-      const expanded = sidebar.getAttribute('data-expanded') === 'true';
-      sidebar.setAttribute('data-expanded', String(!expanded));
-    });
-  }
-</script>
-{% endblock %}

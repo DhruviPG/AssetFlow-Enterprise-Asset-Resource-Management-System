@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications | AssetFlow{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+	<div>
+		<div class="d-flex align-items-center gap-2 flex-wrap">
+			<button class="btn theme-toggle mobile-nav-toggle" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+				<i class="fa-solid fa-bars"></i>
+			</button>
+			<div>
+				<h1>Notifications</h1>
+				<p>{{ unread_count }} unread alerts in your inbox.</p>
+			</div>
+		</div>
+	</div>
+	<div class="d-flex align-items-center gap-2">
+		<button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+			<i class="fa-solid fa-moon" id="themeIcon"></i>
+		</button>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="panel">
+	<div class="panel-header p-3 pb-0">
+		<div>
+			<h3 class="section-title">Notification feed</h3>
+			<p class="section-subtitle">Stay up to date on operational events and approvals.</p>
+		</div>
+	</div>
+	<div class="panel-body p-3 table-responsive">
+		<table class="table align-middle mb-0">
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Message</th>
+					<th>Status</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for notification in notifications %}
+				<tr>
+					<td>{{ notification.title }}</td>
+					<td>{{ notification.message }}</td>
+					<td>
+						<span class="badge {% if notification.is_read %}text-bg-light border{% else %}text-bg-warning{% endif %}">
+							{{ 'Read' if notification.is_read else 'Unread' }}
+						</span>
+					</td>
+					<td>
+						{% if not notification.is_read %}
+						<form method="post" action="{{ url_for('notifications.notification_mark_read', notification_id=notification.id) }}">
+							<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+							<button class="btn btn-sm btn-outline-primary" type="submit">Mark read</button>
+						</form>
+						{% endif %}
+					</td>
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="4" class="text-center text-secondary py-5">No notifications yet.</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</section>
+{% endblock %}

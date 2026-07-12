@@ -166,33 +166,6 @@
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
-  const savedTheme = localStorage.getItem('assetflow-theme') || 'light';
-  const root = document.documentElement;
-  const themeIcon = document.getElementById('themeIcon');
-  const themeToggle = document.getElementById('themeToggle');
-  const sidebar = document.getElementById('sidebar');
-  const sidebarToggle = document.getElementById('sidebarToggle');
-
-  function applyTheme(theme) {
-    root.setAttribute('data-theme', theme);
-    themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-    localStorage.setItem('assetflow-theme', theme);
-  }
-
-  applyTheme(savedTheme);
-
-  themeToggle.addEventListener('click', () => {
-    const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    applyTheme(nextTheme);
-  });
-
-  if (sidebarToggle) {
-    sidebarToggle.addEventListener('click', () => {
-      const expanded = sidebar.getAttribute('data-expanded') === 'true';
-      sidebar.setAttribute('data-expanded', String(!expanded));
-    });
-  }
-
   new Chart(document.getElementById('utilizationChart'), {
     type: 'line',
     data: {
@@ -201,8 +174,8 @@
         {
           label: 'Allocated',
           data: [680, 715, 740, 782, 820, 860, 932],
-          borderColor: '#0f62fe',
-          backgroundColor: 'rgba(15, 98, 254, 0.12)',
+          borderColor: '#0b8a72',
+          backgroundColor: 'rgba(11, 138, 114, 0.12)',
           tension: 0.35,
           fill: true,
         },

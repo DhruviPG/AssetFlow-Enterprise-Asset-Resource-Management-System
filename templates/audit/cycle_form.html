@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}New audit cycle | AssetFlow{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+	<div>
+		<div class="d-flex align-items-center gap-2 flex-wrap">
+			<button class="btn theme-toggle mobile-nav-toggle" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+				<i class="fa-solid fa-bars"></i>
+			</button>
+			<div>
+				<h1>Create audit cycle</h1>
+				<p>Open a new inventory verification cycle for a team or department.</p>
+			</div>
+		</div>
+	</div>
+	<div class="d-flex align-items-center gap-2">
+		<button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+			<i class="fa-solid fa-moon" id="themeIcon"></i>
+		</button>
+		<a class="btn btn-outline-primary" href="{{ url_for('audit.audit_index') }}">Back to cycles</a>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="panel p-4">
+	<form method="post" novalidate>
+		{{ form.hidden_tag() }}
+		<div class="row g-3">
+			<div class="col-12 col-md-6">
+				{{ form.name.label(class_='form-label') }}
+				{{ form.name(class_='form-control', placeholder='Q3 HQ Floor Audit') }}
+			</div>
+			<div class="col-12 col-md-6">
+				{{ form.scheduled_start_at.label(class_='form-label') }}
+				{{ form.scheduled_start_at(class_='form-control') }}
+			</div>
+			<div class="col-12 col-md-6">
+				{{ form.scheduled_end_at.label(class_='form-label') }}
+				{{ form.scheduled_end_at(class_='form-control') }}
+			</div>
+			<div class="col-12">
+				{{ form.description.label(class_='form-label') }}
+				{{ form.description(class_='form-control', rows='4', placeholder='Scope, team, and verification notes') }}
+			</div>
+		</div>
+		<div class="d-grid d-md-flex gap-2 mt-4">
+			{{ form.submit(class_='btn btn-primary') }}
+			<a class="btn btn-outline-secondary" href="{{ url_for('audit.audit_index') }}">Cancel</a>
+		</div>
+	</form>
+</section>
+{% endblock %}

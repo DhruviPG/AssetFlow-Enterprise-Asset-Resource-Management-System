@@ -18,10 +18,7 @@ class BaseConfig:
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
     PERMANENT_SESSION_LIFETIME = timedelta(days=14)
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL",
-        "postgresql+psycopg2://assetflow:assetflow@localhost:5432/assetflow",
-    )
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///assetflow.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WTF_CSRF_TIME_LIMIT = 3600
 
@@ -30,6 +27,7 @@ class DevelopmentConfig(BaseConfig):
     """Development defaults that favor fast local iteration."""
 
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///assetflow.db"
 
 
 class ProductionConfig(BaseConfig):

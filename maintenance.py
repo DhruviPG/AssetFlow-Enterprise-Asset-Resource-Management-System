@@ -50,7 +50,7 @@ def _build_asset_choices() -> list[tuple[int, str]]:
 
 
 @maintenance_bp.route("/", methods=["GET"])
-@require_roles(ROLE_ADMIN, ROLE_ASSET_MANAGER, ROLE_DEPARTMENT_HEAD)
+@require_roles(ROLE_ADMIN, ROLE_ASSET_MANAGER, ROLE_DEPARTMENT_HEAD, ROLE_EMPLOYEE)
 def maintenance_index() -> str:
     """Render a service queue showing all maintenance requests."""
 

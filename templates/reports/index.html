@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports | AssetFlow{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+  <div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button class="btn theme-toggle mobile-nav-toggle" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div>
+        <h1>Reports</h1>
+        <p>Executive summary reporting entrypoint for exports and analysis.</p>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="panel p-4">
+  <div class="row g-3">
+    <div class="col-12 col-md-4">
+      <div class="p-3 border rounded-4 h-100">
+        <strong>Department reports</strong>
+        <p class="mb-0 text-secondary">Assets by department, allocation, and utilization.</p>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="p-3 border rounded-4 h-100">
+        <strong>Maintenance reports</strong>
+        <p class="mb-0 text-secondary">Open issues, priorities, and resolution timing.</p>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="p-3 border rounded-4 h-100">
+        <strong>Audit reports</strong>
+        <p class="mb-0 text-secondary">Cycle results, missing items, and damage summaries.</p>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex gap-2 mt-4">
+    <button class="btn btn-outline-primary" type="button">Export PDF</button>
+    <button class="btn btn-outline-secondary" type="button">Export Excel</button>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Review transfer | AssetFlow{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+  <div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button class="btn theme-toggle mobile-nav-toggle" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div>
+        <h1>Review transfer request</h1>
+        <p>{{ transfer_request.asset.asset_tag }} - {{ transfer_request.reason }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
+    <a class="btn btn-outline-primary" href="{{ url_for('transfers.transfer_index') }}">Back to transfers</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="panel p-4">
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-md-4">
+      <div class="p-3 border rounded-4 h-100">
+        <small class="text-secondary-emphasis d-block">Requested by</small>
+        <strong>{{ transfer_request.requested_by.full_name if transfer_request.requested_by else '-' }}</strong>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="p-3 border rounded-4 h-100">
+        <small class="text-secondary-emphasis d-block">Current status</small>
+        <strong>{{ transfer_request.status }}</strong>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="p-3 border rounded-4 h-100">
+        <small class="text-secondary-emphasis d-block">Requested at</small>
+        <strong>{{ transfer_request.requested_at }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="d-grid d-md-flex gap-2">
+      {{ form.submit_approve(class_='btn btn-success') }}
+      {{ form.submit_reject(class_='btn btn-outline-danger') }}
+    </div>
+  </form>
+</section>
+{% endblock %}

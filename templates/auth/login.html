@@ -10,17 +10,26 @@
   <div class="mb-3">
     {{ form.email.label(class_='form-label') }}
     {{ form.email(class_='form-control', placeholder='name@company.com') }}
+    {% for error in form.email.errors %}
+    <div class="text-danger small mt-1">{{ error }}</div>
+    {% endfor %}
   </div>
   <div class="mb-3">
     {{ form.password.label(class_='form-label') }}
     {{ form.password(class_='form-control', placeholder='Enter your password') }}
+    {% for error in form.password.errors %}
+    <div class="text-danger small mt-1">{{ error }}</div>
+    {% endfor %}
   </div>
   <div class="d-flex align-items-center justify-content-between mb-4">
     <div class="form-check">
       {{ form.remember_me(class_='form-check-input') }}
       {{ form.remember_me.label(class_='form-check-label') }}
     </div>
-    <a class="helper-links" href="{{ url_for('auth.signup') }}">Create account</a>
+    <div class="d-flex flex-column text-end gap-1">
+      <a class="helper-links" href="{{ url_for('auth.signup') }}">Create account</a>
+      <a class="helper-links" href="{{ url_for('auth.forgot_password') }}">Forgot password</a>
+    </div>
   </div>
   {{ form.submit(class_='btn btn-primary w-100') }}
 </form>

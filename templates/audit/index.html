@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Audit | AssetFlow{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+	<div>
+		<div class="d-flex align-items-center gap-2 flex-wrap">
+			<button class="btn theme-toggle mobile-nav-toggle" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+				<i class="fa-solid fa-bars"></i>
+			</button>
+			<div>
+				<h1>Audit cycles</h1>
+				<p>Open and close inventory verification runs across departments.</p>
+			</div>
+		</div>
+	</div>
+	<div class="d-flex align-items-center gap-2">
+		<button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+			<i class="fa-solid fa-moon" id="themeIcon"></i>
+		</button>
+		<a class="btn btn-primary" href="{{ url_for('audit.audit_cycle_create') }}">New cycle</a>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-3">
+	<div class="col-12 col-md-4">
+		<div class="panel p-3">
+			<small class="text-secondary-emphasis">Open</small>
+			<h2 class="mb-0">{{ open_cycles }}</h2>
+		</div>
+	</div>
+	<div class="col-12 col-md-4">
+		<div class="panel p-3">
+			<small class="text-secondary-emphasis">In progress</small>
+			<h2 class="mb-0">{{ in_progress_cycles }}</h2>
+		</div>
+	</div>
+	<div class="col-12 col-md-4">
+		<div class="panel p-3">
+			<small class="text-secondary-emphasis">Closed</small>
+			<h2 class="mb-0">{{ closed_cycles }}</h2>
+		</div>
+	</div>
+</div>
+
+<section class="panel">
+	<div class="panel-header p-3 pb-0 d-flex justify-content-between align-items-center">
+		<div>
+			<h3 class="section-title">Cycle registry</h3>
+			<p class="section-subtitle">Create cycles, record item checks, and close completed reviews.</p>
+		</div>
+		<span class="soft-badge"><i class="fa-solid fa-clipboard-check me-1"></i>{{ cycles|length }} cycles</span>
+	</div>
+	<div class="panel-body p-3 table-responsive">
+		<table class="table align-middle mb-0">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Status</th>
+					<th>Start</th>
+					<th>End</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for cycle in cycles %}
+				<tr>
+					<td>{{ cycle.name }}</td>
+					<td><span class="badge text-bg-light border">{{ cycle.status }}</span></td>
+					<td>{{ cycle.scheduled_start_at or '-' }}</td>
+					<td>{{ cycle.scheduled_end_at or '-' }}</td>
+					<td>
+						<a class="btn btn-sm btn-outline-primary" href="{{ url_for('audit.audit_item_create', cycle_id=cycle.id) }}">Add item</a>
+					</td>
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="5" class="text-center text-secondary py-5">No audit cycles have been created yet.</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</section>
+{% endblock %}

@@ -16,7 +16,7 @@ from wtforms.validators import DataRequired, Length, Optional, NumberRange
 
 from extensions import db
 from models import Asset, AssetCategory
-from security import ROLE_ADMIN, ROLE_ASSET_MANAGER, ROLE_DEPARTMENT_HEAD, require_roles
+from security import ROLE_ADMIN, ROLE_ASSET_MANAGER, ROLE_DEPARTMENT_HEAD, ROLE_EMPLOYEE, require_roles
 
 
 assets_bp = Blueprint("assets", __name__, url_prefix="/assets")
@@ -84,7 +84,7 @@ def _build_category_choices() -> list[tuple[int, str]]:
 
 
 @assets_bp.route("/", methods=["GET"])
-@require_roles(ROLE_ADMIN, ROLE_ASSET_MANAGER, ROLE_DEPARTMENT_HEAD)
+@require_roles(ROLE_ADMIN, ROLE_ASSET_MANAGER, ROLE_DEPARTMENT_HEAD, ROLE_EMPLOYEE)
 def asset_index() -> str:
     """Render the inventory list with simple operational metrics."""
 

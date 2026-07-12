@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Maintenance | AssetFlow{% endblock %}
+{% block title %}Transfers | AssetFlow{% endblock %}
 
 {% block topbar %}
 <div class="topbar">
@@ -10,8 +10,8 @@
         <i class="fa-solid fa-bars"></i>
       </button>
       <div>
-        <h1>Maintenance queue</h1>
-        <p>Open, active, and resolved maintenance requests.</p>
+        <h1>Transfer requests</h1>
+        <p>Request movement of assets between people or departments.</p>
       </div>
     </div>
   </div>
@@ -20,7 +20,7 @@
     <button class="btn theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
       <i class="fa-solid fa-moon" id="themeIcon"></i>
     </button>
-    <a class="btn btn-primary" href="{{ url_for('maintenance.maintenance_create') }}">Raise request</a>
+    <a class="btn btn-primary" href="{{ url_for('transfers.transfer_create') }}">New request</a>
   </div>
 </div>
 {% endblock %}
@@ -29,29 +29,29 @@
 <div class="row g-3 mb-3">
   <div class="col-12 col-md-4">
     <div class="panel p-3">
-      <small class="text-secondary-emphasis">Open</small>
-      <h2 class="mb-0">{{ open_requests }}</h2>
+      <small class="text-secondary-emphasis">Pending</small>
+      <h2 class="mb-0">{{ pending_requests }}</h2>
     </div>
   </div>
   <div class="col-12 col-md-4">
     <div class="panel p-3">
-      <small class="text-secondary-emphasis">In progress</small>
-      <h2 class="mb-0">{{ in_progress_requests }}</h2>
+      <small class="text-secondary-emphasis">Approved</small>
+      <h2 class="mb-0">{{ approved_requests }}</h2>
     </div>
   </div>
   <div class="col-12 col-md-4">
     <div class="panel p-3">
-      <small class="text-secondary-emphasis">Resolved</small>
-      <h2 class="mb-0">{{ resolved_requests }}</h2>
+      <small class="text-secondary-emphasis">Rejected</small>
+      <h2 class="mb-0">{{ rejected_requests }}</h2>
     </div>
   </div>
 </div>
 
 <section class="panel">
-  <div class="panel-header p-3 pb-0 d-flex justify-content-between align-items-center">
+  <div class="panel-header p-3 pb-0">
     <div>
-      <h3 class="section-title">Maintenance history</h3>
-      <p class="section-subtitle">Track issues, priorities, and workflow progress.</p>
+      <h3 class="section-title">Transfer history</h3>
+      <p class="section-subtitle">Track requested, approved, and rejected movements.</p>
     </div>
   </div>
   <div class="panel-body p-3 table-responsive">
@@ -59,25 +59,23 @@
       <thead>
         <tr>
           <th>Asset</th>
-          <th>Summary</th>
-          <th>Priority</th>
+          <th>Reason</th>
           <th>Status</th>
           <th>Requested</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
         {% for request in requests %}
         <tr>
           <td>{{ request.asset.asset_tag }}</td>
-          <td>{{ request.issue_summary }}</td>
-          <td><span class="badge text-bg-light border">{{ request.priority }}</span></td>
-          <td>{{ request.status }}</td>
+          <td>{{ request.reason }}</td>
+          <td><span class="badge text-bg-light border">{{ request.status }}</span></td>
           <td>{{ request.requested_at }}</td>
+          <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('transfers.transfer_decision', transfer_request_id=request.id) }}">Review</a></td>
         </tr>
         {% else %}
-        <tr>
-          <td colspan="5" class="text-center text-secondary py-5">No maintenance requests have been recorded yet.</td>
-        </tr>
+        <tr><td colspan="5" class="text-center text-secondary py-5">No transfer requests yet.</td></tr>
         {% endfor %}
       </tbody>
     </table>
